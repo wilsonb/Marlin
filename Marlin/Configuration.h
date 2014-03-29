@@ -8,7 +8,7 @@
 //===========================================================================
 //============================= DELTA Printer ===============================
 //===========================================================================
-// For a Delta printer replace the configuration files with the files in the
+// For a Delta printer rplace the configuration files wilth the files in the
 // example_configurations/delta directory.
 //
 
@@ -25,8 +25,8 @@
 
 // This determines the communication speed of the printer
 // This determines the communication speed of the printer
-#define BAUDRATE 250000
-
+//#define BAUDRATE 250000
+#define BAUDRATE 115200
 // This enables the serial port associated to the Bluetooth interface
 //#define BTENABLED              // Enable BT interface on AT90USB devices
 
@@ -52,10 +52,8 @@
 // 65 = Azteeg X1
 // 66 = Melzi with ATmega1284 (MaKr3d version)
 // 67 = Azteeg X3
-// 68 = Azteeg X3 Pro
 // 7  = Ultimaker
 // 71 = Ultimaker (Older electronics. Pre 1.5.4. This is rare)
-// 72 = Ultimainboard 2.x (Uses TEMP_SENSOR 20)
 // 77 = 3Drag Controller
 // 8  = Teensylu
 // 80 = Rumba
@@ -68,11 +66,11 @@
 // 702= Minitronics v1.0
 // 90 = Alpha OMCA board
 // 91 = Final OMCA board
-// 301= Rambo
+// 301 = Rambo
 // 21 = Elefu Ra Board (v3)
 
 #ifndef MOTHERBOARD
-#define MOTHERBOARD 7
+#define MOTHERBOARD 33
 #endif
 
 // Define this to set a custom name for your generic Mendel,
@@ -91,7 +89,7 @@
 
 #define POWER_SUPPLY 1
 
-// Define this to have the electronics keep the power supply off on startup. If you don't know what this is leave it.
+// Define this to have the electronics keep the powersupply off on startup. If you don't know what this is leave it.
 // #define PS_DEFAULT_OFF
 
 //===========================================================================
@@ -106,7 +104,7 @@
 // 0 is not used
 // 1 is 100k thermistor - best choice for EPCOS 100k (4.7k pullup)
 // 2 is 200k thermistor - ATC Semitec 204GT-2 (4.7k pullup)
-// 3 is Mendel-parts thermistor (4.7k pullup)
+// 3 is mendel-parts thermistor (4.7k pullup)
 // 4 is 10k thermistor !! do not use it for a hotend. It gives bad resolution at high temp. !!
 // 5 is 100K thermistor - ATC Semitec 104GT-2 (Used in ParCan & J-Head) (4.7k pullup)
 // 6 is 100k EPCOS - Not as accurate as table 1 (created using a fluke thermocouple) (4.7k pullup)
@@ -115,24 +113,18 @@
 // 8 is 100k 0603 SMD Vishay NTCS0603E3104FXT (4.7k pullup)
 // 9 is 100k GE Sensing AL03006-58.2K-97-G1 (4.7k pullup)
 // 10 is 100k RS thermistor 198-961 (4.7k pullup)
-// 20 is the PT100 circuit found in the Ultimainboard V2.x
-// 60 is 100k Maker's Tool Works Kapton Bed Thermistor
+// 60 is 100k Maker's Tool Works Kapton Bed Thermister
 //
 //    1k ohm pullup tables - This is not normal, you would have to have changed out your 4.7k for 1k
 //                          (but gives greater accuracy and more stable PID)
 // 51 is 100k thermistor - EPCOS (1k pullup)
 // 52 is 200k thermistor - ATC Semitec 204GT-2 (1k pullup)
 // 55 is 100k thermistor - ATC Semitec 104GT-2 (Used in ParCan & J-Head) (1k pullup)
-//
-// 1047 is Pt1000 with 4k7 pullup
-// 1010 is Pt1000 with 1k pullup (non standard)
-// 147 is Pt100 with 4k7 pullup
-// 110 is Pt100 with 1k pullup (non standard)
 
-#define TEMP_SENSOR_0 -1
-#define TEMP_SENSOR_1 -1
+#define TEMP_SENSOR_0 1
+#define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
-#define TEMP_SENSOR_BED 0
+#define TEMP_SENSOR_BED 1
 
 // This makes temp sensor 1 a redundant sensor for sensor 0. If the temperatures difference between these sensors is to high the print will be aborted.
 //#define TEMP_SENSOR_1_AS_REDUNDANT
@@ -154,7 +146,7 @@
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 275
+#define HEATER_0_MAXTEMP 300
 #define HEATER_1_MAXTEMP 275
 #define HEATER_2_MAXTEMP 275
 #define BED_MAXTEMP 150
@@ -163,10 +155,6 @@
 // average current. The value should be an integer and the heat bed will be turned on for 1 interval of
 // HEATER_BED_DUTY_CYCLE_DIVIDER intervals.
 //#define HEATER_BED_DUTY_CYCLE_DIVIDER 4
-
-// If you want the M105 heater power reported in watts, define the BED_WATTS, and (shared for all extruders) EXTRUDER_WATTS
-//#define EXTRUDER_WATTS (12.0*12.0/6.7) //  P=I^2/R
-//#define BED_WATTS (12.0*12.0/1.1)      // P=I^2/R
 
 // PID settings:
 // Comment the following line to disable PID and enable bang-bang.
@@ -180,15 +168,18 @@
                                   // is more then PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
   #define PID_INTEGRAL_DRIVE_MAX 255  //limit for the integral term
   #define K1 0.95 //smoothing factor within the PID
-  #define PID_dT ((OVERSAMPLENR * 8.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the temperature routine
+  #define PID_dT ((16.0 * 8.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the temperature routine
 
-// If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
+// If you are using a preconfigured hotend then you can use one of the value sets by uncommenting it
 // Ultimaker
-    #define  DEFAULT_Kp 22.2
-    #define  DEFAULT_Ki 1.08
-    #define  DEFAULT_Kd 114
+    #define  DEFAULT_Kp 16.46
+    #define  DEFAULT_Ki 1.43
+    #define  DEFAULT_Kd 47.47
 
-// MakerGear
+   // #define  DEFAULT_Kp 46.15
+   // #define  DEFAULT_Ki 5.26
+   // #define  DEFAULT_Kd 101.32
+// Makergear
 //    #define  DEFAULT_Kp 7.0
 //    #define  DEFAULT_Ki 0.1
 //    #define  DEFAULT_Kd 12
@@ -257,13 +248,13 @@
 #define ENDSTOPPULLUPS // Comment this out (using // at the start of the line) to disable the endstop pullup resistors
 
 #ifndef ENDSTOPPULLUPS
-  // fine endstop settings: Individual pullups. will be ignored if ENDSTOPPULLUPS is defined
-  // #define ENDSTOPPULLUP_XMAX
-  // #define ENDSTOPPULLUP_YMAX
-  // #define ENDSTOPPULLUP_ZMAX
-  // #define ENDSTOPPULLUP_XMIN
-  // #define ENDSTOPPULLUP_YMIN
-  // #define ENDSTOPPULLUP_ZMIN
+  // fine Enstop settings: Individual Pullups. will be ignored if ENDSTOPPULLUPS is defined
+   #define ENDSTOPPULLUP_XMAX
+   #define ENDSTOPPULLUP_YMAX
+   #define ENDSTOPPULLUP_ZMAX
+   #define ENDSTOPPULLUP_XMIN
+   #define ENDSTOPPULLUP_YMIN
+   #define ENDSTOPPULLUP_ZMIN
 #endif
 
 #ifdef ENDSTOPPULLUPS
@@ -303,7 +294,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define DISABLE_E false // For all extruders
 
 #define INVERT_X_DIR true    // for Mendel set to false, for Orca set to true
-#define INVERT_Y_DIR false    // for Mendel set to true, for Orca set to false
+#define INVERT_Y_DIR true    // for Mendel set to true, for Orca set to false
 #define INVERT_Z_DIR true     // for Mendel set to false, for Orca set to true
 #define INVERT_E0_DIR false   // for direct drive extruder v9 set to true, for geared extruder set to false
 #define INVERT_E1_DIR false    // for direct drive extruder v9 set to true, for geared extruder set to false
@@ -315,15 +306,15 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
 
-#define min_software_endstops true // If true, axis won't move to coordinates less than HOME_POS.
-#define max_software_endstops true  // If true, axis won't move to coordinates greater than the defined lengths below.
+#define min_software_endstops false // If true, axis won't move to coordinates less than HOME_POS.
+#define max_software_endstops false  // If true, axis won't move to coordinates greater than the defined lengths below.
 
 // Travel limits after homing
-#define X_MAX_POS 205
+#define X_MAX_POS 200
 #define X_MIN_POS 0
-#define Y_MAX_POS 205
+#define Y_MAX_POS 240
 #define Y_MIN_POS 0
-#define Z_MAX_POS 200
+#define Z_MAX_POS 150
 #define Z_MIN_POS 0
 
 #define X_MAX_LENGTH (X_MAX_POS - X_MIN_POS)
@@ -331,60 +322,22 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define Z_MAX_LENGTH (Z_MAX_POS - Z_MIN_POS)
 //============================= Bed Auto Leveling ===========================
 
-//#define ENABLE_AUTO_BED_LEVELING // Delete the comment to enable (remove // at the start of the line)
+#define ENABLE_AUTO_BED_LEVELING // Delete the comment to enable (remove // at the start of the line)
 
 #ifdef ENABLE_AUTO_BED_LEVELING
 
-// There are 2 different ways to pick the X and Y locations to probe:
+  // these are the positions on the bed to do the probing
+  #define LEFT_PROBE_BED_POSITION 60
+  #define RIGHT_PROBE_BED_POSITION 195
+  #define BACK_PROBE_BED_POSITION 230
+  #define FRONT_PROBE_BED_POSITION 0
 
-//  - "grid" mode
-//    Probe every point in a rectangular grid
-//    You must specify the rectangle, and the density of sample points
-//    This mode is preferred because there are more measurements.
-//    It used to be called ACCURATE_BED_LEVELING but "grid" is more descriptive
-
-//  - "3-point" mode
-//    Probe 3 arbitrary points on the bed (that aren't colinear)
-//    You must specify the X & Y coordinates of all 3 points
-
-  #define AUTO_BED_LEVELING_GRID
-  // with AUTO_BED_LEVELING_GRID, the bed is sampled in a
-  // AUTO_BED_LEVELING_GRID_POINTSxAUTO_BED_LEVELING_GRID_POINTS grid
-  // and least squares solution is calculated
-  // Note: this feature occupies 10'206 byte
-  #ifdef AUTO_BED_LEVELING_GRID
-
-    // set the rectangle in which to probe
-    #define LEFT_PROBE_BED_POSITION 15
-    #define RIGHT_PROBE_BED_POSITION 170
-    #define BACK_PROBE_BED_POSITION 180
-    #define FRONT_PROBE_BED_POSITION 20
-
-     // set the number of grid points per dimension
-     // I wouldn't see a reason to go above 3 (=9 probing points on the bed)
-    #define AUTO_BED_LEVELING_GRID_POINTS 2
-
-
-  #else  // not AUTO_BED_LEVELING_GRID
-    // with no grid, just probe 3 arbitrary points.  A simple cross-product
-    // is used to esimate the plane of the print bed
-
-      #define ABL_PROBE_PT_1_X 15
-      #define ABL_PROBE_PT_1_Y 180
-      #define ABL_PROBE_PT_2_X 15
-      #define ABL_PROBE_PT_2_Y 20
-      #define ABL_PROBE_PT_3_X 170
-      #define ABL_PROBE_PT_3_Y 20
-
-  #endif // AUTO_BED_LEVELING_GRID
-
-
-  // these are the offsets to the probe relative to the extruder tip (Hotend - Probe)
-  #define X_PROBE_OFFSET_FROM_EXTRUDER -25
-  #define Y_PROBE_OFFSET_FROM_EXTRUDER -29
-  #define Z_PROBE_OFFSET_FROM_EXTRUDER -12.35
-
-  #define Z_RAISE_BEFORE_HOMING 4       // (in mm) Raise Z before homing (G28) for Probe Clearance.
+  // these are the offsets to the prob relative to the extruder tip (Hotend - Probe)
+  #define X_PROBE_OFFSET_FROM_EXTRUDER 41.80
+  #define Y_PROBE_OFFSET_FROM_EXTRUDER 4.30
+  #define Z_PROBE_OFFSET_FROM_EXTRUDER 0  //-6.45
+  
+  #define Z_RAISE_BEFORE_HOMING 10       // (in mm) Raise Z before homing (G28) for Probe Clearance.
                                         // Be sure you have this distance over your Z_MAX_POS in case
 
   #define XY_TRAVEL_SPEED 8000         // X and Y axis travel speed between probes, in mm/min
@@ -397,13 +350,13 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
   //The value is the delay to turn the servo off after powered on - depends on the servo speed; 300ms is good value, but you can try lower it.
   // You MUST HAVE the SERVO_ENDSTOPS defined to use here a value higher than zero otherwise your code will not compile.
 
-//  #define PROBE_SERVO_DEACTIVATION_DELAY 300
+  #define PROBE_SERVO_DEACTIVATION_DELAY 150
 
 
-//If you have enabled the Bed Auto Leveling and are using the same Z Probe for Z Homing,
+//If you have enabled the Bed Auto Levelling and are using the same Z Probe for Z Homing,
 //it is highly recommended you let this Z_SAFE_HOMING enabled!!!
 
-  #define Z_SAFE_HOMING   // This feature is meant to avoid Z homing with probe outside the bed area.
+  //#define Z_SAFE_HOMING   // This feature is meant to avoid Z homing with probe outside the bed area.
                           // When defined, it will:
                           // - Allow Z homing only after X and Y homing AND stepper drivers still enabled
                           // - If stepper drivers timeout, it will need X and Y homing again before Z homing
@@ -417,7 +370,16 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
   #endif
 
-#endif // ENABLE_AUTO_BED_LEVELING
+  // with accurate bed leveling, the bed is sampled in a ACCURATE_BED_LEVELING_POINTSxACCURATE_BED_LEVELING_POINTS grid and least squares solution is calculated
+  // Note: this feature occupies 10'206 byte
+  #define ACCURATE_BED_LEVELING
+  
+  #ifdef ACCURATE_BED_LEVELING
+     // I wouldn't see a reason to go above 3 (=9 probing points on the bed)
+    #define ACCURATE_BED_LEVELING_POINTS 3
+  #endif
+  
+#endif
 
 
 // The position of the homing switches
@@ -425,7 +387,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 //#define BED_CENTER_AT_0_0  // If defined, the center of the bed is at (X=0, Y=0)
 
 //Manual homing switch locations:
-// For deltabots this means top and center of the Cartesian print volume.
+// For deltabots this means top and center of the cartesian print volume.
 #define MANUAL_X_HOME_POS 0
 #define MANUAL_Y_HOME_POS 0
 #define MANUAL_Z_HOME_POS 0
@@ -437,11 +399,12 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 // default settings
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {78.7402,78.7402,200.0*8/3,760*1.1}  // default steps per unit for Ultimaker
-#define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 25}    // (mm/sec)
-#define DEFAULT_MAX_ACCELERATION      {9000,9000,100,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {79.547,79.413,1600,620.388} 
+//#define DEFAULT_AXIS_STEPS_PER_UNIT   {78.7402,78.7402,200.0*8/3,760*1.1}  // default steps per unit for Ultimaker
+#define DEFAULT_MAX_FEEDRATE          {500, 500, 5, 60}    // (mm/sec)
+#define DEFAULT_MAX_ACCELERATION      {1500,1500,100,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
-#define DEFAULT_ACCELERATION          3000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
+#define DEFAULT_ACCELERATION          1500    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000   // X, Y, Z and E max acceleration in mm/s^2 for retracts
 
 // Offset of the extruders (uncomment if using more than one and relying on firmware to position when changing).
@@ -460,11 +423,11 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 //===========================================================================
 
 // EEPROM
-// The microcontroller can store settings in the EEPROM, e.g. max velocity...
-// M500 - stores parameters in EEPROM
+// the microcontroller can store settings in the EEPROM, e.g. max velocity...
+// M500 - stores paramters in EEPROM
 // M501 - reads parameters from EEPROM (if you need reset them after you changed them temporarily).
 // M502 - reverts to the default "factory settings".  You still need to store them in EEPROM afterwards if you want to.
-//define this to enable EEPROM support
+//define this to enable eeprom support
 //#define EEPROM_SETTINGS
 //to disable EEPROM Serial responses and decrease program space by ~1700 byte: comment this out:
 // please keep turned on if you can.
@@ -475,21 +438,19 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define PLA_PREHEAT_HPB_TEMP 70
 #define PLA_PREHEAT_FAN_SPEED 255   // Insert Value between 0 and 255
 
-#define ABS_PREHEAT_HOTEND_TEMP 240
+#define ABS_PREHEAT_HOTEND_TEMP 220
 #define ABS_PREHEAT_HPB_TEMP 100
 #define ABS_PREHEAT_FAN_SPEED 255   // Insert Value between 0 and 255
 
 //LCD and SD support
-//#define ULTRA_LCD  //general LCD support, also 16x2
+//#define ULTRA_LCD  //general lcd support, also 16x2
 //#define DOGLCD  // Support for SPI LCD 128x64 (Controller ST7565R graphic Display Family)
 //#define SDSUPPORT // Enable SD Card Support in Hardware Console
 //#define SDSLOW // Use slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
 //#define ENCODER_PULSES_PER_STEP 1 // Increase if you have a high resolution encoder
 //#define ENCODER_STEPS_PER_MENU_ITEM 5 // Set according to ENCODER_PULSES_PER_STEP or your liking
-//#define ULTIMAKERCONTROLLER //as available from the Ultimaker online store.
-//#define ULTIPANEL  //the UltiPanel as on Thingiverse
-//#define LCD_FEEDBACK_FREQUENCY_HZ 1000	// this is the tone frequency the buzzer plays when on UI feedback. ie Screen Click
-//#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 100 // the duration the buzzer plays the UI feedback sound. ie Screen Click
+//#define ULTIMAKERCONTROLLER //as available from the ultimaker online store.
+//#define ULTIPANEL  //the ultipanel as on thingiverse
 
 // The MaKr3d Makr-Panel with graphic controller and SD support
 // http://reprap.org/wiki/MaKr3d_MaKrPanel
@@ -507,7 +468,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
 // ==> REMEMBER TO INSTALL U8glib to your ARDUINO library folder: http://code.google.com/p/u8glib/wiki/u8glib
-//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
 // The RepRapWorld REPRAPWORLD_KEYPAD v1.1
 // http://reprapworld.com/?products_details&products_id=202&cPath=1591_1626
@@ -575,21 +536,6 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
   #define LCD_USE_I2C_BUZZER //comment out to disable buzzer on LCD
   #define NEWPANEL
   #define ULTIPANEL
-
-  #ifndef ENCODER_PULSES_PER_STEP
-	#define ENCODER_PULSES_PER_STEP 4
-  #endif
-
-  #ifndef ENCODER_STEPS_PER_MENU_ITEM
-	#define ENCODER_STEPS_PER_MENU_ITEM 1
-  #endif
-
-
-  #ifdef LCD_USE_I2C_BUZZER
-	#define LCD_FEEDBACK_FREQUENCY_HZ 1000
-	#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 100
-  #endif
-
 #endif
 
 // Panucatt VIKI LCD with status LEDs, integrated click & L/R/U/P buttons, separate encoder inputs
@@ -612,7 +558,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // https://bitbucket.org/fmalpartida/new-liquidcrystal/wiki/schematics#!shiftregister-connection
 //#define SR_LCD
 #ifdef SR_LCD
-   #define SR_LCD_2W_NL    // Non latching 2 wire shift register
+   #define SR_LCD_2W_NL    // Non latching 2 wire shiftregister
    //#define NEWPANEL
 #endif
 
@@ -628,7 +574,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
     #define LCD_WIDTH 20
     #define LCD_HEIGHT 4
   #endif
-#else //no panel but just LCD
+#else //no panel but just lcd
   #ifdef ULTRA_LCD
   #ifdef DOGLCD // Change number of lines to match the 128x64 graphics display
     #define LCD_WIDTH 20
@@ -643,15 +589,15 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // default LCD contrast for dogm-like LCD displays
 #ifdef DOGLCD
 # ifndef DEFAULT_LCD_CONTRAST
-#  define DEFAULT_LCD_CONTRAST 32
+#  define DEFAULT_LCD_CONTRAST 0
 # endif
 #endif
 
 // Increase the FAN pwm frequency. Removes the PWM noise but increases heating in the FET/Arduino
 //#define FAST_PWM_FAN
 
-// Temperature status LEDs that display the hotend and bet temperature.
-// If all hotends and bed temperature and temperature setpoint are < 54C then the BLUE led is on.
+// Temperature status leds that display the hotend and bet temperature.
+// If alle hotends and bed temperature and temperature setpoint are < 54C then the BLUE led is on.
 // Otherwise the RED led is on. There is 1C hysteresis.
 //#define TEMP_STAT_LEDS
 
@@ -691,15 +637,15 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // leaving it undefined or defining as 0 will disable the servo subsystem
 // If unsure, leave commented / disabled
 //
-//#define NUM_SERVOS 3 // Servo index starts with 0 for M280 command
+#define NUM_SERVOS 1 // Servo index starts with 0 for M280 command
 
 // Servo Endstops
 //
 // This allows for servo actuated endstops, primary usage is for the Z Axis to eliminate calibration or bed height changes.
 // Use M206 command to correct for switch height offset to actual nozzle height. Store that setting with M500.
 //
-//#define SERVO_ENDSTOPS {-1, -1, 0} // Servo index for X, Y, Z. Disable with -1
-//#define SERVO_ENDSTOP_ANGLES {0,0, 0,0, 70,0} // X,Y,Z Axis Extend and Retract angles
+#define SERVO_ENDSTOPS {-1, -1, 0} // Servo index for X, Y, Z. Disable with -1
+#define SERVO_ENDSTOP_ANGLES {0,0, 0,0, 95,10} // X,Y,Z Axis Extend and Retract angles
 
 #include "Configuration_adv.h"
 #include "thermistortables.h"
