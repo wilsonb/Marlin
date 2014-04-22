@@ -296,7 +296,7 @@ static char serial_char;
 static int serial_count = 0;
 static boolean comment_mode = false;
 static char *strchr_pointer; // just a pointer to find chars in the command string like X, Y, Z, E, etc
-
+int after_level = 0;  // Switch for probe levelling of Z axis
 const int sensitive_pins[] = SENSITIVE_PINS; // Sensitive pin list for M42
 
 //static float tt = 0;
@@ -1008,10 +1008,10 @@ static float probe_pt(float x, float y, float z_before) {
   do_blocking_move_to(current_position[X_AXIS], current_position[Y_AXIS], z_before);
   do_blocking_move_to(x - X_PROBE_OFFSET_FROM_EXTRUDER, y - Y_PROBE_OFFSET_FROM_EXTRUDER, current_position[Z_AXIS]);
 
-  engage_z_probe();   // Engage Z Servo endstop if available
+  //engage_z_probe();   // Engage Z Servo endstop if available  BW: Only engage probe once not for every point
   run_z_probe();
   float measured_z = current_position[Z_AXIS];
-  retract_z_probe();
+  //retract_z_probe();  //BW: Only engage probe once, not for every point
 
   SERIAL_PROTOCOLPGM(MSG_BED);
   SERIAL_PROTOCOLPGM(" x: ");
@@ -1046,9 +1046,9 @@ static void homeaxis(int axis) {
 
     // Engage Servo endstop if enabled
     #ifdef SERVO_ENDSTOPS
-      #if defined (ENABLE_AUTO_BED_LEVELING) && (PROBE_SERVO_DEACTIVATION_DELAY > 0)
-        if (axis==Z_AXIS) {
-          engage_z_probe();
+      #if defined (ENABLE_AUTO_BED_LEVELING) && (PROBE_SERVO_DEACTIVATION_DELAY > 0) 
+        if ((axis==Z_AXIS) && (after_level == 0)) {
+          engage_z_probe();  //BW: Do not engage probe for Z axis.  Fixed switch will home
         }
 	    else
       #endif
@@ -1212,6 +1212,7 @@ void process_commands()
         retract(false);
       break;
       #endif //FWRETRACT
+	
     case 28: //G28 Home all Axis one at a time
 #ifdef ENABLE_AUTO_BED_LEVELING
       plan_bed_level_matrix.set_to_identity();  //Reset the plane ("erase" all leveling data)
@@ -1474,7 +1475,9 @@ void process_commands()
 
             int probePointCounter = 0;
             bool zig = true;
-
+			do_blocking_move_to(current_position[X_AXIS], current_position[Y_AXIS], Z_RAISE_BEFORE_PROBING); //BW: raise head to allow room to engage probe
+			engage_z_probe();  //BW: Engage Z Servo Endstop at the beginning of the routine
+			
             for (int yProbe=FRONT_PROBE_BED_POSITION; yProbe <= BACK_PROBE_BED_POSITION; yProbe += yGridSpacing)
             {
               int xProbe, xInc;
@@ -1533,10 +1536,26 @@ void process_commands()
 
             free(plane_equation_coefficients);
 
+			retract_z_probe(); //BW: Lift probe after level routine is completed
+			//Home axes to hit Z-zero point -BW edit
+            enable_endstops(true);
+            HOMEAXIS(X);
+            HOMEAXIS(Y);
+            after_level = 1;  //Switch variable to disable z probe and allow fixed switch to home
+			do_blocking_move_to(current_position[X_AXIS], current_position[Y_AXIS], 10);
+			do_blocking_move_to(0, 0, current_position[Z_AXIS]);
+			run_z_probe();
+			HOMEAXIS(Z);
+            #ifdef ENDSTOPS_ONLY_FOR_HOMING
+              enable_endstops(false);
+            #endif
+			after_level = 0;
+
 #else // AUTO_BED_LEVELING_GRID not defined
 
             // Probe at 3 arbitrary points
-            // probe 1
+            engage_z_probe();  //BW: Lower probe for levelling
+			// probe 1
             float z_at_pt_1 = probe_pt(ABL_PROBE_PT_1_X, ABL_PROBE_PT_1_Y, Z_RAISE_BEFORE_PROBING);
 
             // probe 2
@@ -1548,7 +1567,8 @@ void process_commands()
             clean_up_after_endstop_move();
 
             set_bed_level_equation_3pts(z_at_pt_1, z_at_pt_2, z_at_pt_3);
-
+			retract_z_probe();  //BW: Raise probe after routine
+			
 
 #endif // AUTO_BED_LEVELING_GRID
             st_synchronize();

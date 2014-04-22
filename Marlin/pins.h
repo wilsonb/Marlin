@@ -2035,6 +2035,10 @@
 #define KILL_PIN           -1 //80 with Smart Controller LCD
 #define SUICIDE_PIN        -1  //PIN that has to be turned on right after start, to keep power flowing.
 
+#ifdef NUM_SERVOS  //Add pin definition for Z probe servo
+#define SERVO0_PIN 13
+#endif
+
 #ifdef ULTRA_LCD
   #define KILL_PIN 80
   #ifdef NEWPANEL
