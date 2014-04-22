@@ -1047,8 +1047,8 @@ static void homeaxis(int axis) {
     // Engage Servo endstop if enabled
     #ifdef SERVO_ENDSTOPS
       #if defined (ENABLE_AUTO_BED_LEVELING) && (PROBE_SERVO_DEACTIVATION_DELAY > 0) 
-        if ((axis==Z_AXIS) && (after_level == 0)) {
-          engage_z_probe();  //BW: Do not engage probe for Z axis.  Fixed switch will home
+        if (axis==Z_AXIS) {
+          //engage_z_probe();  //BW: Do not engage probe for Z axis.  Fixed switch will home
         }
 	    else
       #endif
@@ -1541,15 +1541,14 @@ void process_commands()
             enable_endstops(true);
             HOMEAXIS(X);
             HOMEAXIS(Y);
-            after_level = 1;  //Switch variable to disable z probe and allow fixed switch to home
+			//Prepare to and home Z for final position relative to fixed end stop
 			do_blocking_move_to(current_position[X_AXIS], current_position[Y_AXIS], 10);
-			do_blocking_move_to(0, 0, current_position[Z_AXIS]);
 			run_z_probe();
 			HOMEAXIS(Z);
             #ifdef ENDSTOPS_ONLY_FOR_HOMING
               enable_endstops(false);
             #endif
-			after_level = 0;
+		
 
 #else // AUTO_BED_LEVELING_GRID not defined
 
