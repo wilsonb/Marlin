@@ -1534,7 +1534,7 @@ void process_commands()
 
             set_bed_level_equation_lsq(plane_equation_coefficients);
 
-            free(plane_equation_coefficients);
+            //free(plane_equation_coefficients);
 
 			retract_z_probe(); //BW: Lift probe after level routine is completed
 			//Home axes to hit Z-zero point -BW edit
@@ -1548,7 +1548,10 @@ void process_commands()
             #ifdef ENDSTOPS_ONLY_FOR_HOMING
               enable_endstops(false);
             #endif
-		
+			
+		    set_bed_level_equation_lsq(plane_equation_coefficients);
+
+            free(plane_equation_coefficients);
 
 #else // AUTO_BED_LEVELING_GRID not defined
 
